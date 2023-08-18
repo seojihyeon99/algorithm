@@ -1,87 +1,91 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	public static ArrayList<ArrayList<Integer>> graph = new ArrayList<>(); //그래프 정보
-	public static boolean[] dvisited; // dfs에서 방문했는지 여부 저장
-	public static boolean[] bvisited; // bfs에서 방문했는지 여부 저장
+	static int n; // 정점의 개수
+	static int m; // 간선의 개수
+	static int v; // 탐색 시작할 정점의 번호
 	
-	public static void dfs(int x) {
-		dvisited[x] = true; // 현재 노드 방문처리
-		System.out.print(x + " "); // 현재 방문한 노드 출력
-
-		Collections.sort(graph.get(x)); // 정점 번호가 작은것 먼저 방문하므로, 오름차순 정렬
-		// 현재 노드의 인접 노드를 하나씩 꺼냄 => y
-		for (int i = 0; i < graph.get(x).size(); i++) {
-			int y = graph.get(x).get(i);
-			// 방문하지 않았다면 해당 노드 방문
-			if (!dvisited[y]) {
-				dfs(y);
+	static boolean[] visited; // 정점의 방문 체크. 0번째 정점은 사용 x -> n+1 크기로 만듦
+	
+	static StringBuilder sb = new StringBuilder(); // 한번에 출력하기 위한 StringBuilder
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		
+		n = Integer.parseInt(st.nextToken()); // 정점의 개수
+		m = Integer.parseInt(st.nextToken()); // 간선의 개수
+		v = Integer.parseInt(st.nextToken()); // 탐색 시작할 정점의 번호
+		
+		// 인접 리스트 생성(0번째 정점은 사용 안할것이므로, n+1개만큼 생성)
+		List<List<Integer>> graph = new ArrayList<>();
+		for(int i=0; i<n+1; i++) {
+			graph.add(new ArrayList<>());
+		}
+		
+		// 인접 리스트에 간선 정보 저장
+		for(int i=0; i<m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int e1 = Integer.parseInt(st.nextToken()); 
+			int e2 = Integer.parseInt(st.nextToken());
+			graph.get(e1).add(e2);
+			graph.get(e2).add(e1); // 반드시 대칭?방향도 추가해줘야!!
+		}
+		
+		// 인접 리스트 정렬 -> 정점 번호가 작은것부터 방문 위함
+		for(int i=0; i<n+1; i++) {
+			Collections.sort(graph.get(i));
+		}
+		
+		visited = new boolean[n+1]; // 방문 체크를 위한 visited 배열 초기화
+		visited[v] = true; // 시작정점 방문 체크
+		sb.append(v + " "); // 시작정점 출력
+		dfs(graph, v); // dfs 수행
+		sb.append("\n");
+		
+		visited = new boolean[n+1]; // 방문 체크를 위한 visited 배열 초기화
+		bfs(graph); // bfs 수행
+		sb.append("\n");
+		
+		System.out.println(sb.toString());
+	}
+	
+	
+	static void dfs(List<List<Integer>> graph, int vertex) {
+		for(int i=0; i<graph.get(vertex).size(); i++) {
+			int adj = graph.get(vertex).get(i); // 인접한 정점의 번호
+			if(!visited[adj]) { // 인접 정점을 방문하지 않았다면
+				visited[adj] = true; // 해당 인접 정점을 방문 처리
+				sb.append(adj + " "); // 해당 인접 정점을 출력
+				dfs(graph, adj); // 다시 해당 정점을 기준으로 재귀호출
 			}
 		}
 	}
 	
-	public static void bfs(int x) {
-		Queue<Integer> queue = new LinkedList<>();
-		queue.offer(x); //큐에 시작 노드 넣음
-		bvisited[x] = true; //시작 노드 방문 처리
+	static void bfs(List<List<Integer>> graph) { 
+		Queue<Integer> queue = new ArrayDeque<>();
+		queue.offer(v); // 시작 정점을 큐에 넣어줌
+		visited[v] = true; // 시작 정점을 방문 체크
 		
-		Collections.sort(graph.get(x)); // 정점 번호가 작은것 먼저 방문하므로, 오름차순 정렬
-		//큐가 빌때까지 반복
-		while(!queue.isEmpty()) {
-			int v = queue.poll(); //큐에서 노드 하나 꺼냄
-			System.out.print(v + " ");
-			// 현재 노드의 인접 노드를 하나씩 꺼냄 => y
-			for(int y : graph.get(v)) {
-				// 방문하지 않았다면 해당 노드 인큐
-				if(!bvisited[y]) {
-					queue.offer(y);
-					bvisited[y] = true; //해당 노드 방문 처리
+		while(!queue.isEmpty()) { // 큐가 빌때까지 반복
+			int cur = queue.poll(); // 큐에서 하나 꺼냄
+			sb.append(cur + " ");
+			for(int i=0; i<graph.get(cur).size(); i++) { // 해당 인접리스트의 사이즈만큼 반복
+				int adj = graph.get(cur).get(i); // 인접한 정점의 번호
+				if(!visited[adj]) { // 인접 정점을 방문하지 않았다면
+					queue.offer(adj); // 해당 인접 정점을 큐에 넣어줌
+					visited[adj] = true; // 해당 인접 정점을 방문 처리 
 				}
 			}
 		}
-		
-		
 	}
-
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String s = br.readLine();
-		StringTokenizer st = new StringTokenizer(s);
-
-		int n = Integer.parseInt(st.nextToken()); // 정점의 개수
-		int m = Integer.parseInt(st.nextToken()); // 간선의 개수
-		int v = Integer.parseInt(st.nextToken()); // 시작 노드
-
-		dvisited = new boolean[n + 1]; // dfs에서 방문여부 체크. 인덱스 0은 사용하지 x
-		bvisited = new boolean[n + 1]; // bfs에서 방문여부 체크. 인덱스 0은 사용하지 x
-
-		// 그래프 초기화
-		for (int i = 0; i < n + 1; i++) {
-			graph.add(new ArrayList<Integer>());
-		}
-
-		// 간선의 개수 m만큼 돌면서, 각 정점에 인접한 노드 정보 저장
-		for (int i = 0; i < m; i++) {
-			s = br.readLine();
-			st = new StringTokenizer(s);
-			int n1 = Integer.parseInt(st.nextToken());
-			int n2 = Integer.parseInt(st.nextToken());
-
-			graph.get(n1).add(n2);
-			graph.get(n2).add(n1);
-		}
-		
-		dfs(v); // 시작 노드를 전달하며 dfs 호출
-		System.out.println();
-		bfs(v); // 시작 노드를 전달하며 bfs 호출
-	}
-
+	
 }

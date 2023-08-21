@@ -25,9 +25,13 @@ public class Main {
 		int m = Integer.parseInt(st.nextToken()); // 키 비교횟수
 		
 		// 인접리스트 생성
-		List<List<Integer>> list = new ArrayList<>();
+//		List<List<Integer>> list1 = new ArrayList<>();
+//		for(int i=0; i<n+1; i++) {
+//			list.add(new ArrayList<>());
+//		}
+		List<Integer>[] list = new List[n+1];
 		for(int i=0; i<n+1; i++) {
-			list.add(new ArrayList<>());
+			list[i] = new ArrayList<>();
 		}
 
 		boolean[] visited = new boolean[n+1]; // 방문여부 저장
@@ -38,7 +42,8 @@ public class Main {
 			int prev = Integer.parseInt(st.nextToken()); // 선행되어야하는애
 			int next = Integer.parseInt(st.nextToken()); // 그 다음 방문
 			indegree[next]++; // 진입차수 1 증가
-			list.get(prev).add(next);
+//			list.get(prev).add(next);
+			list[prev].add(next);
 		}
 				
 		// 시작점들을 큐에 넣어줌
@@ -59,9 +64,10 @@ public class Main {
 				int cur = queue.poll();
 				sb.append(cur + " ");
 				
-				for(int v : list.get(cur)) {
+//				for(int v : list.get(cur)) {
+				for(int v : list[cur]) {
 					indegree[v]--;
-					if(indegree[v] == 0) {
+					if(indegree[v] == 0 && !visited[v]) {
 						queue.offer(v);
 						visited[v] = true;
 					}

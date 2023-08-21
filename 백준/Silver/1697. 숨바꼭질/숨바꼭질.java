@@ -1,40 +1,57 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	static boolean[] visited = new boolean[100001]; // 해당 위치 방문했는지 체크
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		int n = sc.nextInt(); // 수빈이의 위치
-		int k = sc.nextInt(); // 동생의 위치
-		boolean[] isvisited = new boolean[100001]; // 해당 좌표 방문여부 체크 -> cut하는데 사용
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		Queue<int[]> queue = new ArrayDeque<>(); // 큐에 크기가 2인(현재 위치, 현재 시각) int[]가 담김
-		queue.offer(new int[] {n, 0}); // 처음(0초일때) 수빈이의 위치를 큐에 넣어줌
+		int n = Integer.parseInt(st.nextToken()); // 수빈이의 위치
+		int k = Integer.parseInt(st.nextToken()); // 동생의 위치
 		
+		int time = 0; // 동생 찾기까지 걸린 시간
 		
+		Queue<int[]> queue = new ArrayDeque<>();
+		queue.offer(new int[] {n, 0}); // 수빈이의 초기 위치를 넣어줌
+		visited[n] = true; // 수빈이의 초기 위치 방문체크
+		
+		// 큐가 빌때까지 반복
 		while(!queue.isEmpty()) {
-			int[] curpos = queue.poll(); // 큐에서 하나 꺼냄
-			// 동생 위치에 도착했다면, 종료!
-			if(curpos[0] == k) {
-				System.out.println(curpos[1]);
+			int[] cur = queue.poll(); // 큐에서 하나 꺼내서
+			
+			int curn = cur[0]; // 현재 수빈이의 위치
+			int curtime = cur[1]; // 현재까지 걸린 시간
+
+			// 동생의 위치라면
+			if(curn == k) {
+				time = curtime; // time 업데이트해주고 break
 				break;
 			}
 			
-			if(curpos[0]-1>=0 && !isvisited[curpos[0]-1]) {
-				queue.offer(new int[] {curpos[0]-1, curpos[1]+1}); // x-1로 이동
-				isvisited[curpos[0]-1] = true; 
+			// 동생의 위치 아니라면
+			curtime++; // 현재까지 걸린 시간 1 증가시키고
+				
+			if(curn-1>=0 && !visited[curn-1]) {
+				queue.offer(new int[] {curn-1, curtime}); // 수빈이의 위치를 -1									
+				visited[curn-1] = true; // 해당 위치 방문체크
 			}
-			if(curpos[0]+1<100001 && !isvisited[curpos[0]+1]) {
-				queue.offer(new int[] {curpos[0]+1, curpos[1]+1}); // x+1로 이동
-				isvisited[curpos[0]+1] = true; 
+			if(curn+1<=100000 && !visited[curn+1]) {
+				queue.offer(new int[] {curn+1, curtime}); // 수빈이의 위치를 +1					
+				visited[curn+1] = true; // 해당 위치 방문체크
 			}
-			if(curpos[0]*2<100001 && !isvisited[curpos[0]*2]) {
-				queue.offer(new int[] {curpos[0]*2, curpos[1]+1}); // x*2로 이동
-				isvisited[curpos[0]*2] = true; 
+			if(curn*2<=100000 && !visited[curn*2]) {
+				queue.offer(new int[] {curn*2, curtime}); // 수빈이의 위치를 *2					
+				visited[curn*2] = true; // 해당 위치 방문체크
 			}
 		}
 		
+		System.out.println(time);
 	}
 }

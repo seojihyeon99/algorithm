@@ -212,14 +212,5 @@ public class Main {
 			}	
 		}	
 	}
-	
-	static int getSum() {
-		int sum = 0;
-		for(int r=0; r<n; r++) {
-			for(int c=0; c<m; c++) {
-				if(map[r][c] == '0') sum++;
-			}
-		}
-		return sum;		
-	}
+
 }

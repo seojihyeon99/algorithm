@@ -1,3 +1,13 @@
+/**
+ * [아이디어]
+ * 순열 + 구현 + 시뮬레이션
+ * 코드 길이 이게 맞나...???
+ * 
+ * [메모리]
+ * 67920KB
+ * [시간]
+ * 356ms
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

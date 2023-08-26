@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -16,7 +18,8 @@ public class Solution {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
-         
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        
         int tc = Integer.parseInt(br.readLine()); // 테스트 케이스 수
         // 테스트 케이스 수만큼 반복
         for(int t=1; t<=tc; t++) {
@@ -52,7 +55,8 @@ public class Solution {
             }
         }
          
-        System.out.println(sb);
+        bw.write(sb.toString());
+        bw.flush(); 
     }
      
     static void clean(int idx) { // idx : 현재 커맨드의 인덱스

@@ -50,8 +50,7 @@ public class Solution {
 					}
 				}
 			}
-//			System.out.println("dfs 시작전 추가된 core 수 : " + maxPower);
-//			System.out.println("리스트에 들어간 core 수 : " + core.size());
+
 			dfs(selected, 0, maxPower, 0);
 			
 			sb.append("#" + t + " " + resultline + "\n");
@@ -61,17 +60,18 @@ public class Solution {
 	
 	
 	static void dfs(boolean[][] selected, int count, int powercnt, int lines) { // count : 현재 몇개의 core 봤는지(전원 연결된거 제외), powercnt : 현재 core 개수
+        // 남은 코어 수를 다 더해도 현재 maxPower보다 작다면 -> 가망 없음 -> 백트래킹
+		if(powercnt + core.size() - count < maxPower) {
+			return;
+		}
+		
 		if(count == core.size()) {
 			if(powercnt > maxPower) {
 				maxPower = powercnt;
 				resultline = lines;
-//				System.out.println("이때의 전원연결된 최대 코어수 :  "+powercnt + ", 전선 길이 : " + lines);
-//				print(selected);
 			}
 			else if (powercnt == maxPower && resultline > lines) { // 더 적은 전선 사용가능하면
 				resultline = lines;
-//				System.out.println("이때의 전원연결된 최대 코어수 :  "+powercnt + ", 전선 길이 : " + lines);
-//				print(selected);
 			}
 			return;
 		}
@@ -115,15 +115,4 @@ public class Solution {
 		dfs(selected, count+1, powercnt, lines);
 
 	}
-	
-//	static void print(boolean[][] copy) {
-//		for(int  r=0; r<n; r++) {
-//			for(int c=0; c<n; c++) {
-//				System.out.printf("%6s", copy[r][c]);
-//			}
-//			System.out.println();
-//		}
-//		System.out.println("==========================================");
-//	}
 }
-

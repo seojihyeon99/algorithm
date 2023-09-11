@@ -5,17 +5,26 @@
  *  
  * kruscal 알고리즘을 사용하여 해결하였음(간선 정렬 + union-find가 다함)
  * 
- * 55% 틀림
+ * 처음에 55%에서 계속 틀림
+ * n=2이고, m=1이면 반복문이 딱 1번만 돌아서 lastCost를 빼주지 못했음 ㅠㅠ
+ * => if(count == n-1)을 체크하는 부분을 뒤로 이동시킴
+ * ex) 정답 0 나와야
+ * 2 1
+ * 1 2 3
+ * 
+ * ※ 간선리스트를 정렬하는게 아닌, PriorityQueue에 넣으면 시간 완전 많이 줄어듦!!
+ *    + Comparator의 compare 구현이 아닌 -> Comparable의 compareTo 구현으로 바꿈
  */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 // 간선 정보와 관련된 클래스
-class Edge{
+class Edge implements Comparable<Edge>{
 	int left; // in
 	int right; // out
 	int weight; // 가중치
@@ -25,6 +34,11 @@ class Edge{
 		this.left = left;
 		this.right = right;
 		this.weight = weight;
+	}
+
+	@Override
+	public int compareTo(Edge o) {
+		return this.weight-o.weight;
 	}
 }
 
@@ -70,23 +84,26 @@ public class Main {
 		n = Integer.parseInt(st.nextToken()); // 집의 개수
 		m = Integer.parseInt(st.nextToken()); // 길의 개수
 		
-		Edge[] edgeList = new Edge[m]; // 간선 리스트
+//		Edge[] edgeList = new Edge[m]; // 간선 리스트
+		PriorityQueue<Edge> queue = new PriorityQueue<>(); // 간선 리스트
 		// 길의 개수만큼 반복
 		for(int i=0; i<m; i++) {
 			st = new StringTokenizer(br.readLine());
 			int left = Integer.parseInt(st.nextToken())-1;	
 			int right = Integer.parseInt(st.nextToken())-1;	
 			int weight = Integer.parseInt(st.nextToken());	
-			edgeList[i] = new Edge(left, right, weight);
+			queue.add(new Edge(left, right, weight));
+//			edgeList[i] = new Edge(left, right, weight);
 		}
 		
-		// 간선을 오름차순으로 정렬 => kruscal 알고리즘 핵심
-		Arrays.sort(edgeList, new Comparator<Edge>() {
-			@Override
-			public int compare(Edge o1, Edge o2) {
-				return o1.weight-o2.weight;
-			}
-		});
+		
+//		// 간선을 오름차순으로 정렬 => kruscal 알고리즘 핵심
+//		Arrays.sort(edgeList, new Comparator<Edge>() {
+//			@Override
+//			public int compare(Edge o1, Edge o2) {
+//				return o1.weight-o2.weight;
+//			}
+//		});
 		
 		makeSet(); // 서로소 집합 생성
 
@@ -94,7 +111,7 @@ public class Main {
 		int total = 0; // 총 비용
 		int lastCost = 0; // 마지막 간선 비용(신장트리 완성시키면 제일 최대일것 => 이것을 제거!!)
 		for(int i=0; i<m; i++) {
-			Edge cur = edgeList[i];
+			Edge cur = queue.poll();
 			if(union(cur.left, cur.right)) { // 두 정점 다른 집합에 있다면 => union!!
 				total += cur.weight; // 총 비용에 현재 간선의 비용을 더함
 				count++; // 선택된 간선의 수 1 증가

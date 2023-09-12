@@ -19,8 +19,9 @@ public class Main {
 			}
 		}
 		
-		paper(0, 0, n);
+		paper(0, 0, n); // 같은 숫자들만 적힐때까지 종이 자르는 함수 
 		
+		// -1, 0, 1로만 채워진 종이의 개수 출력
 		for(int i=0; i<3; i++) {
 			System.out.println(count[i]);
 		}
@@ -35,37 +36,38 @@ public class Main {
 			return;
 		}
 		
-		int sum = 0; 
-		int zerocnt = 0; // 0의 개수
+		int start = arr[lefttopx][lefttopy]; // 현재 종이의 좌상단 숫자
+		boolean isDifferent = false; // 현재 종이의 숫자가 모두 같은지
+		// 현재 종이에 적힌 숫자들을 모두 순회하면서
 		for(int r=lefttopx; r<lefttopx + size; r++) {
 			for(int c=lefttopy; c<lefttopy + size; c++) {
-				sum += arr[r][c];
-				if(arr[r][c] == 0) zerocnt++;
+				if(start != arr[r][c]) { // 처음 좌상단의 숫자와 같지 않으면
+					isDifferent = true; // 같지 않다는 flag를 true로 함
+					break;
+				}
 			}
+			if(isDifferent) break;
 		}
-		// 모두 -1로만 이루어져 있을경우
-		if(sum == -1*size*size) {
-			count[0]++;
-			return;
-		}
-		// 모두 1로만 이루어져 있을경우
-		else if(sum == 1*size*size) {
-			count[2]++;
-			return;
-		}
-		// 모두 0으로만 이루어져 있을경우
-		else if(sum == 0 && zerocnt == size*size) {
-			count[1]++;
-			return;
-		}
-		// -1, 0, 1 숫자가 섞여있을경우
-		else {
-			// 다시 같은 크기의 종이 9개로 자름
+		
+		// 현재 종이에 적힌 숫자가 모두 같지 않다면
+		if(isDifferent) {
+			// 다시 같은 크기의 종이 9개로 자름(크기는 1/3로 줄어듦)
 			for(int r=0; r<3; r++) {
 				for(int c=0; c<3; c++) {
 					paper(lefttopx + size/3*r, lefttopy + size/3*c, size/3);					
 				}
-			}
+			}			
+		}
+		// 현재 종이에 적힌 숫자가 모두 같다면(-1, 0, 1 섞여있다면)
+		else {
+			// 모두 -1로만 이루어져 있을경우
+			if(start == -1) count[0]++;
+			// 모두 0으로만 이루어져 있을경우
+			else if(start == 0) count[1]++;
+			// 모두 1로만 이루어져 있을경우
+			else if(start == 1) count[2]++;
+			
+			return;
 		}
 	}
 }

@@ -1,7 +1,21 @@
+/**
+ * [아이디어]
+ * 구현 + 시뮬레이션
+ * 
+ * 구름을 어떻게 이동시키는지가 제일 까다로웠음!!
+ * int x = r + dx[dir]*(dist%n); // 이동한 구름의 x좌표
+ * x = (x+n)%n; // x 위치 보정(배열 인덱스 넘을 때 이어지게)
+ * int y = c + dy[dir]*(dist%n); // 이동한 구름의 y좌표
+ * y = (y+n)%n; // y 위치 보정(배열 인덱스 넘을 때 이어지게)
+ * 
+ * [메모리]
+ * 17633KB
+ * [시간]
+ * 208ms
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -43,9 +57,6 @@ public class Main {
 			int dist = Integer.parseInt(st.nextToken()); // 이동 거리
 			
 			simulation(dir, dist); 
-			
-/*			System.out.println((i+1)+"번째 반복 후 좌표");
-			printArr();*/
 		}
 		
 		// 이동 모두 끝난 후 바구니에 들어있는 물의 양의 합 출력
@@ -106,14 +117,4 @@ public class Main {
 			}
 		}
 	}
-
-/*	static void printArr() {
-		for(int r=0; r<n; r++) {
-			for(int c=0; c<n; c++) {
-				System.out.print(arr[r][c] + " ");
-			}
-			System.out.println();
-		}
-		System.out.println("====================");
-	}*/
 }

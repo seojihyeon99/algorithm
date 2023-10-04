@@ -9,7 +9,6 @@ public class Solution {
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb = new StringBuilder();
 		
 		int tc = Integer.parseInt(br.readLine()); // 전체 테스트 케이스 수
 		// 테스트 케이스 수만큼 반복
@@ -69,9 +68,8 @@ public class Solution {
 				if(sum == n) result++;
 			}
 			
-			sb.append("#" + t + " " + result + "\n");
+			System.out.println("#" + t + " " + result);
 		}
-		System.out.println(sb.toString());
 	}
 	
 }

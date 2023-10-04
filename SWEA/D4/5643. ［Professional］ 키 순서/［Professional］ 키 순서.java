@@ -9,6 +9,7 @@ public class Solution {
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 		
 		int tc = Integer.parseInt(br.readLine()); // 전체 테스트 케이스 수
 		// 테스트 케이스 수만큼 반복
@@ -30,10 +31,13 @@ public class Solution {
 			for(int i=0; i<n; i++) {
 				boolean[] isvisited = new boolean[n]; // 정점들 방문 여부 저장
 				
+				int sum = 0; // 자기와 비교 가능한 애들(작은애들 + 큰애들)의 총합
+				
 				// outEdge들 구함(자기보다 키가 큰 애들)
 				Queue<Integer> taller = new ArrayDeque<>(); // 방문한 정점들 저장
 				taller.offer(i);
 				isvisited[i] = true; // 해당 정점 방문 표시
+				sum++;
 				while(!taller.isEmpty()) {
 					int cur = taller.poll();
 					for(int j=0; j<n; j++) {
@@ -41,6 +45,7 @@ public class Solution {
 						if(adjMatrix[cur][j] == 1 && !isvisited[j]) {
 							taller.offer(j);
 							isvisited[j] = true;
+							sum++;
 						}
 					}
 				}
@@ -56,20 +61,17 @@ public class Solution {
 						if(adjMatrix[j][cur] == 1 && !isvisited[j]) {
 							shorter.offer(j);
 							isvisited[j] = true;
+							sum++;
 						}
 					}
 				}
-				
-				int sum = 0; // 자기와 비교 가능한 애들(작은애들 + 큰애들)의 총합
-				for(int j=0; j<n; j++) {
-					if(isvisited[j]) sum++;
-				}
-				
+
 				if(sum == n) result++;
 			}
 			
-			System.out.println("#" + t + " " + result);
+			sb.append("#" + t + " " + result + "\n");
 		}
+		System.out.println(sb.toString());
 	}
 	
 }

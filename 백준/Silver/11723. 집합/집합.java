@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int[] arr = new int[21];
+	static int num = 0;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
@@ -17,14 +17,10 @@ public class Main {
 			if(op.equals("all") || op.equals("empty")) {
 				switch(op) {
 				case "all":
-					for(int j=1; j<=20; j++) {
-						arr[j] = 1;
-					}
+					num =(int)Math.pow(2, 20) - 1; // 11...1 (1이 20개)
 					break;
 				case "empty":
-					for(int j=1; j<=20; j++) {
-						arr[j] = 0;
-					}
+					num = 0; // 00...0 (0이 20개)
 					break;
 				}
 			}
@@ -32,16 +28,16 @@ public class Main {
 				int n = Integer.parseInt(st.nextToken()); // 연산자 뒤 숫자
 				switch(op) {
 				case "add":
-					arr[n] = 1;
+					num = num | (1 << (n - 1));
 					break;
 				case "remove":
-					arr[n] = 0;
+					num = num & ((int)Math.pow(2, 20) - 1 ^ (1 << (n - 1))); // XOR 연산
 					break;
 				case "check": // check 연산이 주어질때마다, 결과를 출력
-					sb.append(arr[n] + "\n");
+					sb.append((num >> (n - 1) & 1) + "\n");
 					break;
 				case "toggle":
-					arr[n] = arr[n]^1; // XOR 연산(0->1, 1->0)
+					num = num ^ (1 << (n - 1)); // XOR 연산(0->1, 1->0)
 					break;
 				}		
 			}

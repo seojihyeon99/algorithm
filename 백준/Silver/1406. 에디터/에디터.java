@@ -52,17 +52,17 @@ public class Main {
 			}
 		}
 		
+		// 오른쪽 스택 -> 왼쪽 스택으로 합침
+		while(!st2.isEmpty()) {
+			st1.push(st2.pop());
+		}
+
 		// 왼쪽 스택
-		for(int j=0; j<st1.size(); j++) {
-			sb.append(st1.get(j));
+		while(!st1.isEmpty()) {
+			sb.append(st1.pop());
 		}
 		
-		// 오른쪽 스택
-		for(int j=st2.size()-1; j>=0; j--) {
-			sb.append(st2.get(j));
-		}
-		
-		System.out.println(sb);
+		System.out.println(sb.reverse());
 		
 	}
 }

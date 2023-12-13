@@ -33,8 +33,8 @@ public class Main {
 		
 		int opNum = Integer.parseInt(br.readLine()); // 명령어의 개수
 		for(int i=0; i<opNum; i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			char op = st.nextToken().charAt(0);
+			String s = br.readLine();
+			char op = s.charAt(0);
 			switch(op) {
 			case 'L':
 				if(!st1.isEmpty()) st2.push(st1.pop()); // 커서를 왼쪽으로 한 칸 옮김
@@ -46,23 +46,21 @@ public class Main {
 				if(!st1.isEmpty()) st1.pop(); // 커서의 왼쪽에 있는 문자를 삭제함
 				break;
 			case 'P':
-				char item = st.nextToken().charAt(0);
-				st1.push(item); // 문자를 커서 왼쪽에 추가함
+				st1.push(s.charAt(2)); // 문자를 커서 왼쪽에 추가함
 				break;
 			}
 		}
 		
 		// 오른쪽 스택 -> 왼쪽 스택으로 합침
-		while(!st2.isEmpty()) {
-			st1.push(st2.pop());
+		while(!st1.isEmpty()) {
+			st2.push(st1.pop());
 		}
 
 		// 왼쪽 스택
-		while(!st1.isEmpty()) {
-			sb.append(st1.pop());
+		while(!st2.isEmpty()) {
+			sb.append(st2.pop());
 		}
 		
-		System.out.println(sb.reverse());
-		
+		System.out.println(sb);
 	}
 }

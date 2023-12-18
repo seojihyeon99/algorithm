@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 
 /**
  * dp의 답 => dp[현재 몇번째 계단인지][그 전까지 1이 연속한 횟수] (0이면 답이 될 수 없는 결과)
+ * 처음에 계단이 1일때 계속 ArrayIndexOutOfBounds가 났음.. => n>=2로 조건 분기해줘야!
  */
 public class Main {
 	public static void main(String[] args) throws IOException {
@@ -32,7 +33,7 @@ public class Main {
 			for(int i=3; i<=n; i++) {
 				dp[i][0] = score[i] + Math.max(Math.max(dp[i-2][0], dp[i-2][1]), dp[i-2][2]);
 				dp[i][1] = score[i] + dp[i-1][0];
-				dp[i][2] = 0;
+				dp[i][2] = 0; // 뒤의 3자리가 +2 +1 +1이면  -> 계단 3개 연속해서 밟은것이므로, 답이될 수 x
 			}			
 		}
 		

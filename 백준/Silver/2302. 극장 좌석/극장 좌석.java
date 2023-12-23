@@ -6,7 +6,8 @@ import java.util.Queue;
 
 /**
  * dp[i] : vip를 제외한 이어지는 좌석 크기가 i일때의 경우의 수 
- * 
+ * dp[1] = 1, dp[2] = 2, 
+ * dp[i] = dp[i-1] + dp[i-2] (그전꺼 뒤에 i붙힌 것 + 그전전꺼 뒤에 i, i-1 순서로 붙힌 것)
  */
 public class Main {
 	public static void main(String[] args) throws IOException {

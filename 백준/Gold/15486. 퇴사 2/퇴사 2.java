@@ -7,7 +7,11 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 /**
+ * 처음에 2차원 배열로 dp만들었으나 n*n*4 = 9*10^12으로 메모리초과 => dp 무조건 1차원으로 만들어야!!
  * dp[j] : 현재날까지의 상담 종료일이 j일 때 최대 이익
+ * 
+ * 또한 n*n = 9*10^12은 시간초과이므로 모든 배열은 탐색하면 x 
+ * => 문제에서 주어진 Ti<=50이므로 이전 50개까지만 탐색!! n*50= 125*10^6이므로 가능!!
  */
 public class Main {
 	public static void main(String[] args) throws IOException {
@@ -32,9 +36,10 @@ public class Main {
 
 			// 현재 dp에는 이전 날짜까지의 상담 종료일이 j일때의 최대 이익 정보가 저장되어있음
 			
-			// 상담 끝났을 때(상담 종료일이 현재 날짜 이전)의 경우를 고려 
-			for(int j=i-50; j<=i; j++) {
-				if(j<0) continue;
+			// 상담 끝났을 때(상담 종료일이 현재 날짜 50일이전까지)의 경우를 고려
+			int start = 1;
+			if(i-50 > 1) start = i-50;
+			for(int j=start; j<=i; j++) {
 				// 현재날짜에 새로운 상담 시작 x => 상담 종료일 그대로 유지
 				// 현재날짜에 새로운 상담 시작 o(상담을 시작해도 퇴사일 전에 끝남) => 상담 종료일 업데이트
 				if(i+time <= n+1) {

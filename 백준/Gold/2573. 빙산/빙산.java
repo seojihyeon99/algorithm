@@ -41,6 +41,8 @@ public class Main {
 			// 이웃한 0 개수만큼 빙산 높이 감소 (0보다 더 줄어들진 x)
 			decreaseIce(n, m, map, queue);
 			
+//			printState(n, m, map);
+			
 			// 빙산 다 녹거나, 1개밖에 남지 않은 경우 => 두 덩어리로 분리될 수 없음
 			if(queue.size() <= 1) break;
 			
@@ -56,6 +58,17 @@ public class Main {
 			System.out.println(year);
 		else
 			System.out.println(0);
+	}
+	
+	static void printState(int n, int m, int[][] map) {
+		for(int r=0; r<n; r++) {
+			for(int c=0; c<m; c++) {
+				System.out.print(map[r][c] + " ");
+			}
+			System.out.println();
+		}
+		
+		System.out.println("=====================");
 	}
 	
 	static boolean isSeperated(int n, int m, int[][] map, Queue<int[]> queue) {
@@ -77,7 +90,7 @@ public class Main {
 				int nexty = cur[1] + dy[i];
 				
 				// 배열의 인덱스를 넘지 않고, 빙산이고, 방문하지 않았다면
-				if(nextx>=0 && nextx<n && nexty>=0 && nexty<m && map[nextx][nexty]>0 && !visited[nextx][nexty]) {
+				if(map[nextx][nexty]>0 && !visited[nextx][nexty]) {
 					group.add(new int[] {nextx, nexty, cur[2]});
 					visited[nextx][nexty] = true; // 방문 처리
 					cnt++; // 첫번째 그룹의 빙산 개수 1증가
@@ -109,7 +122,7 @@ public class Main {
 				int nexty = cur[1] + dy[j];
 				
 				// 이웃한 곳이 0이라면, 0의 개수 증가
-				if(nextx>=0 && nextx<n && nexty>=0 && nexty<m && map[nextx][nexty] == 0) {
+				if(map[nextx][nexty] == 0) {
 					zeroCnt++;
 				}
 			}

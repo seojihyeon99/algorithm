@@ -39,9 +39,7 @@ public class Main {
 			year++; // 1년 증가
 			
 			// 이웃한 0 개수만큼 빙산 높이 감소 (0보다 더 줄어들진 x)
-			decreaseIce(n, m, map, queue);
-			
-//			printState(n, m, map);
+			map = decreaseIce(n, m, map, queue);
 			
 			// 빙산 다 녹거나, 1개밖에 남지 않은 경우 => 두 덩어리로 분리될 수 없음
 			if(queue.size() <= 1) break;
@@ -58,17 +56,6 @@ public class Main {
 			System.out.println(year);
 		else
 			System.out.println(0);
-	}
-	
-	static void printState(int n, int m, int[][] map) {
-		for(int r=0; r<n; r++) {
-			for(int c=0; c<m; c++) {
-				System.out.print(map[r][c] + " ");
-			}
-			System.out.println();
-		}
-		
-		System.out.println("=====================");
 	}
 	
 	static boolean isSeperated(int n, int m, int[][] map, Queue<int[]> queue) {
@@ -104,7 +91,7 @@ public class Main {
 		return false;
 	}
 	
-	static void decreaseIce(int n, int m, int[][] map, Queue<int[]> queue) {
+	static int[][] decreaseIce(int n, int m, int[][] map, Queue<int[]> queue) {
 		int len = queue.size();
 		
 		// 원본 배열 복제!! (원본 건드리면 안됨!!@@@@)
@@ -139,9 +126,7 @@ public class Main {
 			}
 		}
 		
-		// 원본 배열에 복제한 배열 값을 다시 넣음
-		for(int i=0; i<n; i++) {
-			map[i] = Arrays.copyOf(newMap[i], m);
-		}
+		// 복제한 배열을 반환
+		return newMap;
 	}
 }

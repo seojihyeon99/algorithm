@@ -6,50 +6,53 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static boolean[] visited = new boolean[100001]; // 해당 위치 방문했는지 체크
-	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		
 		int n = Integer.parseInt(st.nextToken()); // 수빈이의 위치
-		int k = Integer.parseInt(st.nextToken()); // 동생의 위치
+		int m = Integer.parseInt(st.nextToken()); // 동생의 위치
 		
-		int time = 0; // 동생 찾기까지 걸린 시간
+		boolean[] visited = new boolean[100001]; // 해당 좌표 방문 여부
 		
-		Queue<int[]> queue = new ArrayDeque<>();
-		queue.offer(new int[] {n, 0}); // 수빈이의 초기 위치를 넣어줌
-		visited[n] = true; // 수빈이의 초기 위치 방문체크
+		int time = 0; // 동생을 만난 가장 빠른 시간
 		
-		// 큐가 빌때까지 반복
+		Queue<int[]> queue = new ArrayDeque<>(); // 수빈이의 위치, 시간
+		queue.offer(new int[] {n,0});
+		visited[n] = true;
+		
 		while(!queue.isEmpty()) {
-			int[] cur = queue.poll(); // 큐에서 하나 꺼내서
+			int[] cur = queue.poll();
+			int x = cur[0];
+			int t = cur[1];
 			
-			int curn = cur[0]; // 현재 수빈이의 위치
-			int curtime = cur[1]; // 현재까지 걸린 시간
-
-			// 동생의 위치라면
-			if(curn == k) {
-				time = curtime; // time 업데이트해주고 break
+			// 동생을 만났다면 
+			if(x == m) {
+				time = t;
 				break;
 			}
 			
-			// 동생의 위치 아니라면
-			curtime++; // 현재까지 걸린 시간 1 증가시키고
-				
-			if(curn-1>=0 && !visited[curn-1]) {
-				queue.offer(new int[] {curn-1, curtime}); // 수빈이의 위치를 -1									
-				visited[curn-1] = true; // 해당 위치 방문체크
+			// 한 칸 앞으로 걷는 경우
+			int nextx = x-1;
+			if(nextx >= 0 && !visited[nextx]) {
+				queue.offer(new int[] {nextx, t+1}); // 1초 증가
+				visited[nextx] = true;
 			}
-			if(curn+1<=100000 && !visited[curn+1]) {
-				queue.offer(new int[] {curn+1, curtime}); // 수빈이의 위치를 +1					
-				visited[curn+1] = true; // 해당 위치 방문체크
+			
+			// 한 칸 뒤로 걷는 경우
+			nextx = x+1;
+			if(nextx<=100000 && !visited[nextx]) {
+				queue.offer(new int[] {nextx, t+1}); // 1초 증가
+				visited[nextx] = true;
 			}
-			if(curn*2<=100000 && !visited[curn*2]) {
-				queue.offer(new int[] {curn*2, curtime}); // 수빈이의 위치를 *2					
-				visited[curn*2] = true; // 해당 위치 방문체크
-			}
+			
+			// 순간 이동 하는 경우
+			nextx = 2*x;
+			if(nextx<=100000 && !visited[nextx]) {
+				queue.offer(new int[] {nextx, t+1}); // 1초 증가
+				visited[nextx] = true;
+			}			
 		}
 		
 		System.out.println(time);

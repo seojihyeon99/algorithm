@@ -6,6 +6,7 @@ import java.util.*;
 public class Main {
 
     static int max = 0;
+    static int decreased = 0; // 감소한 블럭수
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,26 +14,28 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
 
         // 배열 입력 받기
+        int nblock = 0; // 블록의 수
         int[][] map = new int[n][n];
         for(int r=0; r<n; r++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             for(int c=0; c<n; c++) {
                 map[r][c] = Short.parseShort(st.nextToken());
+                if(map[r][c] != 0) nblock++;
             }
         }
 
+        // 블록 이동시키기 (상하좌우)
         for(int i=0; i<4; i++) {
-            moveBlock(map, n, i,1);
+            moveBlock(map, n, i,1, nblock);
         }
 
         System.out.println(max);
 
     }
 
-    static void moveBlock(int[][] arr, int n, int dir, int cnt) {
-        // @@@@ 이것도 더 최적화 될듯
+    static void moveBlock(int[][] arr, int n, int dir, int cnt, int nblock) { // 배열, 배열 크기, 방향, 현재 이동 횟수, 남은 블럭의 수
         // 종료조건
-        if(cnt >=6) {
+        if(cnt >= 6 || nblock == 1) {
             // 현재 블록들 중에 최댓값 찾음
             max = Math.max(findMax(arr, n), max);
             return;
@@ -46,6 +49,7 @@ public class Main {
         int[][] movedArr = changBlockPos(copy, n, dir);
 
         // 값을 충돌시켜 합침
+        decreased = 0;
         int[][] joinedArr = joinBlock(movedArr, n, dir);
 
         // 다시 블록 이동
@@ -54,7 +58,7 @@ public class Main {
         // 블록 이동 방향을 바꿔감
         for(int i=0; i<4; i++) {
             // 그 다음 이동
-            moveBlock(movedArr2, n, i, cnt+1);
+            moveBlock(movedArr2, n, i, cnt+1, nblock - decreased);
         }
 
     }
@@ -85,6 +89,7 @@ public class Main {
                         else if(arr[up][c] == arr[down][c]) {
                             arr[up][c] *= 2;
                             arr[down][c] = 0;
+                            decreased++;
                         }
                     }
                 }
@@ -101,6 +106,7 @@ public class Main {
                         else if(arr[up][c] == arr[down][c]) {
                             arr[down][c] *= 2;
                             arr[up][c] = 0;
+                            decreased++;
                         }
                     }
                 }
@@ -117,6 +123,7 @@ public class Main {
                         else if(arr[r][left] == arr[r][right]) {
                             arr[r][left] *= 2;
                             arr[r][right] = 0;
+                            decreased++;
                         }
                     }
                 }
@@ -133,6 +140,7 @@ public class Main {
                         else if(arr[r][left] == arr[r][right]) {
                             arr[r][right] *= 2;
                             arr[r][left] = 0;
+                            decreased++;
                         }
                     }
                 }
@@ -232,17 +240,6 @@ public class Main {
         }
 
         return arr;
-    }
-
-    static void printState(int[][] arr, int n) {
-        for(int r=0; r<n; r++) {
-            for(int c=0; c<n; c++) {
-                System.out.print(arr[r][c] + " ");
-            }
-            System.out.println();
-        }
-
-        System.out.println("====================================");
     }
 
 }

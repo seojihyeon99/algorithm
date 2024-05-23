@@ -60,18 +60,33 @@ public class Main {
 		int max = 0; // 최댓값
 		// 5개의 테르로미노 중 하나 선택
 		for(int i=0; i<5; i++) {
-			List<int[]> cur = list[i];
-			// 각 테르로미노의 대칭 여부
-			for(int j=0; j<4; j++) {
-				List<int[]> mirrored = mirrored(cur, j);
-				
+			if(i == 0) {
+				List<int[]> rotated = list[i];
 				// 각 테르로미노의 회전 여부
 				for(int k=0; k<4; k++) {
-					mirrored = rotated(mirrored);
+					rotated = rotated(rotated);
 					
 					// 가장 최댓값인지 비교
-					max = Math.max(maxValue(map, mirrored, n, m), max);
+					max = Math.max(maxValue(map, rotated, n, m), max);
 				}
+			}
+			else if(i == 1) {
+				max = Math.max(maxValue(map, list[i], n, m), max);		
+			}
+			else {
+				List<int[]> cur = list[i];
+				// 각 테르로미노의 대칭 여부
+				for(int j=0; j<4; j++) {
+					List<int[]> mirrored = mirrored(cur, j);
+					
+					// 각 테르로미노의 회전 여부
+					for(int k=0; k<4; k++) {
+						mirrored = rotated(mirrored);
+						
+						// 가장 최댓값인지 비교
+						max = Math.max(maxValue(map, mirrored, n, m), max);
+					}
+				}				
 			}
 		}
 		

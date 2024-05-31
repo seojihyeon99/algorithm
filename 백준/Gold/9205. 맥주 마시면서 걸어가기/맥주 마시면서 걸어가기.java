@@ -15,7 +15,7 @@ public class Main {
 		
 		int tc = Integer.parseInt(br.readLine()); // 테스트 케이스 수
 		for(int t=0; t<tc; t++) {
-			Queue<int[]> store = new ArrayDeque(); // 편의점 좌표
+			Queue<int[]> store = new ArrayDeque(); // 편의점들의 좌표
 			int n = Integer.parseInt(br.readLine()); // 편의점 수
 			
 			// 집 좌표 입력 받기
@@ -45,36 +45,36 @@ public class Main {
 		System.out.println(sb);
 	}
 	
+	/*
+	 * 맥주 1병당 50m 이동 가능 => 맥주 20병당 1000m 이동 가능!
+	 * queue : 현재 편의점의 좌표
+	 * store : 남은 편의점의 좌표
+	 */
 	static String bfs(int[] house, Queue<int[]> store, int[] end) {
-		Queue<int[]> queue = new ArrayDeque<>(); // 좌표(x, y)
+		Queue<int[]> queue = new ArrayDeque<>(); // 현재 편의점의 좌표(x, y)
 
 		// 시작지점(집 좌표) 큐에 넣음
 		queue.offer(new int[] {house[0], house[1]});
 
 		while(!queue.isEmpty()) {
-			int[] pos = queue.poll(); // 현재 좌표(x, y)
-			
-			// 락 페스티벌에 도착했다면
-			if(pos[0] == end[0] && pos[1] == end[1]) {
-				return "happy";
-			}
+			int[] cur = queue.poll(); // 현재 편의점의 좌표(x, y)
 						
-			// 50미터 이내에 end가 있다면 큐에 넣음
-			if(Math.abs(end[0] - pos[0]) + Math.abs(end[1] - pos[1]) <= 1000) {
-				queue.offer(new int[] {end[0], end[1]});
+			// 50미터 이내에 락 페스티벌(end)이 있다면 도착 가능
+			if(Math.abs(end[0] - cur[0]) + Math.abs(end[1] - cur[1]) <= 1000) {
+				return "happy";
 			}
 	
 			int len = store.size();
 			for(int i=0; i<len; i++) {
-				int[] cur = store.poll(); // 현재 편의점
+				int[] next = store.poll(); // 남은 편의점
 
-				// 50미터 이내에 편의점이 있다면
-				if(Math.abs(pos[0] - cur[0]) + Math.abs(pos[1] - cur[1]) <= 1000) {
-					queue.offer(new int[] {cur[0], cur[1]}); // 좌표 넣음
+				// 50미터 이내에 남은 편의점이 있다면
+				if(Math.abs(cur[0] - next[0]) + Math.abs(cur[1] - next[1]) <= 1000) {
+					queue.offer(new int[] {next[0], next[1]}); // 이동 (현재 편의점의 좌표로 넣음)
 				}
 				// 50미터 이내에 편의점이 없다면
 				else {
-					store.offer(new int[] {cur[0], cur[1]}); // 해당 편의점 좌표 다시 넣음
+					store.offer(new int[] {next[0], next[1]}); // 이동 불가 (남은 편의점의 좌표로 넣음)
 				}
 			}
 			

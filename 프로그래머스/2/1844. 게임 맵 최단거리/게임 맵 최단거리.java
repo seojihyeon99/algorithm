@@ -6,15 +6,15 @@ class Solution {
     int[] dy = new int[] {0, 0, -1, 1};
     
     public int solution(int[][] maps) {
-        int n = maps.length;
-        int m = maps[0].length;
+        int n = maps.length; // 세로 길이
+        int m = maps[0].length; // 가로 길이
         
         int answer = -1;
         
-        boolean[][] visited = new boolean[n][m];
+        boolean[][] visited = new boolean[n][m]; // 방문여부
         Queue<int[]> queue = new ArrayDeque<>(); // x좌표, y좌표, 지나간 칸 수
         queue.offer(new int[] {0,0,1}); // 처음 시작 좌표
-        visited[0][0] = true;
+        visited[0][0] = true; // 시작점 방문처리
         
         while(!queue.isEmpty()) {
             int[] cur = queue.poll();
@@ -27,14 +27,17 @@ class Solution {
             
             // 상하좌우 이동
             for(int i=0; i<4; i++) {
-                int nx = cur[0] + dx[i];
-                int ny = cur[1] + dy[i];
+                int nx = cur[0] + dx[i]; // 이동할 x좌표
+                int ny = cur[1] + dy[i]; // 이동할 y좌표
                 
-                // 배열의 인덱스 넘거나 벽이 있거나 이미 방문한적 있다면 pass
-                if(nx<0 || nx >=n || ny<0 || ny>=m || maps[nx][ny] == 0 || visited[nx][ny]) continue;
+                // 배열의 인덱스 넘는 경우 pass
+                if(nx<0 || nx >=n || ny<0 || ny>=m) continue;
+                
+                // 벽이 있거나 이미 방문한적 있다면 pass
+                if(maps[nx][ny] == 0 || visited[nx][ny]) continue;
                 
                 queue.offer(new int[] {nx, ny, cur[2]+1}); // 지나간 칸 수 1 증가
-                visited[nx][ny] = true;
+                visited[nx][ny] = true; // 방문처리
             }
             
         }

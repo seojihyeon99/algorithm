@@ -1,68 +1,54 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.StringTokenizer;
 
 public class Main {
-	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
 		int n = Integer.parseInt(st.nextToken()); // 나무의 수
-		int m = Integer.parseInt(st.nextToken()); // 필요한 나무의 길이
+		int m = Integer.parseInt(st.nextToken()); // 집에 가져갈 나무의 길이
 		
-		// 나무의 높이 저장
 		int[] tree = new int[n];
 		st = new StringTokenizer(br.readLine());
 		for(int i=0; i<n; i++) {
 			tree[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		int height = 0; // 절단기 높이의 최댓값(처음에 제일 최대로 설정)
+		int left = 0;
+		int right = 1_000_000_000;
+		int height = (left + right)/2; // 현재 절단기 높이
 		
-		int start = 0;
-		int end = 1_000_000_000;
-		while(true) {
-			int middle = (start + end)/2; // 임시 절단기 높이
-			if(start == middle) {
-				long sum = 0; // 잘린 나무의 길이
-				middle = end; // 임시 절단기 높이 end로 설정
-				for(int i=0; i<n; i++) {
-					if(middle < tree[i]) { // 절단기 길이보다 나무 길이가 더 길다면 => 잘림
-						sum += tree[i] - middle;
-					}
-				}
-				if(sum == m) {
-					height = end;
-					break;
-				}
-				
-				height = start;
-				break;
-			}
-
-			long sum = 0; // 잘린 나무의 길이
+		while(left <= right) {
+			int mid = (left + right)/2; // 현재 절단기 높이
+			
+			long sum = 0; // 현재 절단기 높이일 때, 잘린 높이들의 합
+			// 절단기로 나무들을 자름
 			for(int i=0; i<n; i++) {
-				if(middle < tree[i]) { // 절단기 길이보다 나무 길이가 더 길다면 => 잘림
-					sum += tree[i] - middle;
-				}
+				int cut = (tree[i] - mid) > 0 ? tree[i] - mid : 0; // '나무 높이 > 절단기'이면 잘림
+				sum += cut;	
+				
+				if(sum >= m) break;
 			}
 			
-			if(sum > m) { // 잘린 길이합 > 필요한 나무 길이 -> 절단기 높이를 높혀야 
-				start = middle;
+			if(sum >= m) {
+				left = mid+1;
+				height = mid;
 			}
-			else if(sum < m) { // 잘린 길이합 < 필요한 나무 길이 -> 절단기 높이를 낮춰야 
-				end = middle;
+			else {
+				right = mid-1;
 			}
-			else { // 잘린 길이합이 필요한 나무 길이와 같으면 -> 해당 절단기 높이가 정답!
-				height = middle;
-				break;
-			}		
-
+			
 		}
 		
 		System.out.println(height);
+		
 	}
-
 }

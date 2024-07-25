@@ -43,7 +43,6 @@ class Main {
 		}
 		
 		PriorityQueue<Node> pq = new PriorityQueue<>();
-		int finishx = -1; int finishy=-1;
 		
 		// 2차원 배열 입력받기
 		for(int r=0; r<n; r++) {
@@ -55,10 +54,6 @@ class Main {
 				if(map[r][c] == 'T') {
 					pq.offer(new Node(r, c, 0));
 					dist[r][c] = 0;
-				}
-				else if(map[r][c] == 'E') {
-					finishx = r;
-					finishy = c;
 				}
 			}
 		}
@@ -78,22 +73,13 @@ class Main {
 			}
 			
 			for(int dir=0; dir<4; dir++) {
-				int cnt = slide(cur.x, cur.y, dir, map, n, m); // 해당 방향으로 슬라이드 할 수 있는 칸수
+				// 해당 방향으로 슬라이딩 결과 (슬라이딩한 칸의 수, 슬라이딩한 칸의 시간 합)
+				int[] result = slide(cur.x, cur.y, dir, map, n, m);
+				int cnt = result[0]; // 슬라이딩한 칸의 수
+				int sum = result[1]; // 슬라이딩한 칸의 시간 합
 				
 				// 범위에 벗어나거나 구멍에 빠지는 경우
 				if(cnt == -1) continue;
-				
-				// 미끄러질때까지의 걸린시간의 합 구함
-				int sum = 0;
-				for(int i=1; i<=cnt; i++) {
-					int nx = cur.x + i*dx[dir];
-					int ny = cur.y + i*dy[dir];
-					
-					// 출구를 만나는 경우
-					if(map[nx][ny] == 'E') break;
-					
-					sum += (map[nx][ny]-'0');				
-				}
 				
 				// 미끄러진 최종 좌표
 				int nx = cur.x + cnt*dx[dir];
@@ -101,7 +87,6 @@ class Main {
 				// 거리 갱신
 				if(!visited[nx][ny] && dist[nx][ny] > dist[cur.x][cur.y] + sum) {
 					dist[nx][ny] = dist[cur.x][cur.y] + sum;
-					
 					pq.offer(new Node(nx, ny, dist[nx][ny]));
 				}
 			}
@@ -110,27 +95,28 @@ class Main {
 		System.out.println(time);
 	}
 	
-	static int slide(int x, int y, int dir, char[][] map, int n, int m) {
+	static int[] slide(int x, int y, int dir, char[][] map, int n, int m) {
 		int cnt = 1;
+		int sum = 0;
 		while(true) {
 			int nextx = x + cnt*dx[dir];
 			int nexty = y + cnt*dy[dir];
 			
 			// 범위 벗어나거나 구멍을 빠지는 경우
 			if(nextx<0 || nextx>=n || nexty<0 || nexty>=m || map[nextx][nexty] == 'H') {
-				return -1;
-			}
-			
-			// 바위를 만나는 경우
-			if(map[nextx][nexty] == 'R') {
-				return cnt-1;
+				return new int[] {-1, 0};
 			}
 			
 			// 출구를 만나는 경우
 			if(map[nextx][nexty] == 'E') {
-				return cnt;
+				return new int[] {cnt, sum};
+			}
+			// 바위를 만나는 경우
+			else if(map[nextx][nexty] == 'R') {
+				return new int[] {cnt-1, sum};
 			}
 			
+			sum += (map[nextx][nexty]-'0');
 			cnt++;
 		}
 	}

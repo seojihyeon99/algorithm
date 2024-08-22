@@ -2,6 +2,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * 자료형 long 이용 => 이때 캐스팅을 괄호 안에서 해줘야!!
+ */
 class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

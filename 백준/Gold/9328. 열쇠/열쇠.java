@@ -2,7 +2,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -30,17 +32,17 @@ class Main {
 			int n = Integer.parseInt(st.nextToken()); // 높이
 			int m = Integer.parseInt(st.nextToken()); // 너비
 				
+			boolean[][] visited = new boolean[n+2][m+2]; // 해당 지역 방문여부
+
 			// 맵 입력 ('.' : 빈공간, '*' : 벽, '$' : 문서, '대문자' : 문, '소문자' : 열쇠)
 			char[][] map = new char[n+2][m+2];
 			for(int r=1; r<=n; r++) {
 				String s = br.readLine();
 				for(int c=1; c<=m; c++) {
 					map[r][c] = s.charAt(c-1);
-				}
-				
+				}				
 			}
-			boolean[][] visited = new boolean[n+2][m+2];
-			
+				
 			// 열쇠 입력
 			boolean[] key = new boolean[26];
 			String s = br.readLine();
@@ -50,7 +52,7 @@ class Main {
 				}				
 			}
 
-			// 시작점 입력 (빌딩 가장자리의 벽이 아닌 곳)
+			// 빌딩 밖 입력
 			Queue<Node> queue = new ArrayDeque<>();		
 			for(int c=1; c<=m; c++) {
 				queue.offer(new Node(0, c));
@@ -59,6 +61,12 @@ class Main {
 			for(int r=1; r<=n; r++) {
 				queue.offer(new Node(r, 0));
 				queue.offer(new Node(r, m+1));
+			}
+			
+			// 대기문 (나중에 키 찾을때 열릴 가능성 있는 문)
+			List<Node>[] door = new List[26];
+			for(int i=0; i<26; i++) {
+				door[i] = new ArrayList<>();
 			}
 			
 			int count = 0; // 훔칠 수 있는 문서의 개수
@@ -79,31 +87,35 @@ class Main {
 							visited[nx][ny] = true;
 						}
 						else if(map[nx][ny] == '$') { // 문서
-							map[nx][ny] = '.';
 							count++;
+							map[nx][ny] = '.';
 							queue.offer(new Node(nx, ny));
 							visited[nx][ny] = true;
 						}
 						else if(isDoor(map[nx][ny])) { // 문
-							if(key[map[nx][ny] - 'A']) {
+							if(key[map[nx][ny] - 'A']) { // 열수 있는 열쇠 있을 때
 								queue.offer(new Node(nx, ny));
 								visited[nx][ny] = true;
 							}
+							else { // 열수 있는 열쇠 없을 때 => 나중을 위해 대기문에 저장
+								door[map[nx][ny] - 'A'].add(new Node(nx, ny));
+							}
 						}
-						else if(isKey(map[nx][ny])) { // 열쇠							
-							key[map[nx][ny] - 'a'] = true;
+						else if(isKey(map[nx][ny])) { // 열쇠	
+							// 처음 줍는 열쇠라면
+							if(!key[map[nx][ny] - 'a']) {
+								// 해당 열쇠로 열 수 있는 문이 있는 경우
+								for(Node d : door[map[nx][ny] - 'a']) {
+									queue.offer(new Node(d.x, d.y));
+									visited[d.x][d.y] = true;
+								}
+								
+								key[map[nx][ny] - 'a'] = true;							
+							}
+
 							map[nx][ny] = '.';
-							
-							visited = new boolean[n+2][m+2];
-							queue.clear();
-							for(int c=1; c<=m; c++) {
-								queue.offer(new Node(0, c));
-								queue.offer(new Node(n+1, c));
-							}
-							for(int r=1; r<=n; r++) {
-								queue.offer(new Node(r, 0));
-								queue.offer(new Node(r, m+1));
-							}
+							queue.offer(new Node(nx, ny));
+							visited[nx][ny] = true;
 						}						
 					}	
 				}

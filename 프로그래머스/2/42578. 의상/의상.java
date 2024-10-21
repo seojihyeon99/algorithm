@@ -2,27 +2,27 @@ import java.util.*;
 
 class Solution {
     public int solution(String[][] clothes) {
-        Map<String, Integer> map = new HashMap<>(); // type, count
+        int n = clothes.length; // 의상수
+        HashMap<String, Integer> map = new HashMap<>();
         
-        for(int i=0; i<clothes.length; i++) {
-            String type = clothes[i][1];
-
+        for(int i=0; i<n; i++) {
+            String type = clothes[i][1]; // 의상종류
+            
             if(map.containsKey(type)) {
                 map.put(type, map.get(type) + 1);
             }
             else {
                 map.put(type, 1);
             }
-        }    
-    
-        int answer = 1;
-        Set<String> keys = map.keySet();
-        Iterator<String> it = keys.iterator();
-        while(it.hasNext()) {
-            String t = it.next();
-            answer *= (map.get(t) + 1); // 해당 키들 중 선택 / 아무 키도 선택 x
         }
-        answer = answer - 1; // 아무 키도 선택 안하는 경우
+        
+        int answer = 1;
+        Iterator<String> keys = map.keySet().iterator();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            answer = answer * (map.get(key)+1);
+        }
+        answer = answer - 1; // 아무것도 입지 않는 경우는 없다
         
         return answer;
     }
